@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kocham Cię ❤️</title>
+<link rel="icon" type="image/x-icon" href="serce.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background: radial-gradient(circle at center, #2a0a0f, #0b0b0b);
+  color:white;
+  overflow-x:hidden;
+}
+
+/* ===== LOADING ===== */
+#loader{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:40px;
+  font-family:'Great Vibes',cursive;
+  color:#ff4d6d;
+  z-index:9999;
+  animation:fadeOut 1s ease forwards;
+  animation-delay:2.5s;
+}
+@keyframes fadeOut{
+  to{opacity:0;visibility:hidden;}
+}
+
+/* ===== FONT ===== */
+@font-face {
+  font-family: 'Priestacy';
+  src: url('./fonts/Priestacy.ttf') format('truetype'),
+       url('./fonts/Priestacy.otf') format('opentype');
+}
+
+/* ===== HERO ===== */
+.hero{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  position:relative;
+  text-align:center;
+}
+
+.title{
+  font-family:'Priestacy','Great Vibes',cursive;
+  font-size:clamp(60px,12vw,160px);
+  white-space:nowrap;
+  overflow:hidden;
+  border-right:3px solid white;
+  display:inline-block;
+  width:0;
+  animation:none;
+  text-shadow:0 0 30px #ff4d6d;
+}
+
+.title.animate{
+  animation:typing 3s steps(12) forwards, blink .7s infinite;
+}
+
+@keyframes typing{ to{width:100%;} }
+@keyframes blink{ 50%{border-color:transparent;} }
+
+.hearts{
+  position:absolute;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+.heart{
+  position:absolute;
+  color:#ff4d6d;
+  animation:float 6s linear infinite;
+  opacity:0.6;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh);}
+  to{transform:translateY(-10vh);}
+}
+
+.scroll{
+  position:absolute;
+  bottom:30px;
+  font-size:30px;
+  opacity:0.6;
+}
+
+/* ===== KARTA ===== */
+.card{
+  max-width:1200px;
+  margin:100px auto;
+  padding:30px;
+  display:flex;
+  gap:30px;
+  background:rgba(255,255,255,0.05);
+  border-radius:20px;
+  backdrop-filter:blur(15px);
+  box-shadow:0 0 40px #ff4d6d22;
+}
+
+.card img{
+  width:600px;
+  border-radius:15px;
+}
+
+.card p{
+  font-size:18px;
+  line-height:1.7;
+}
+
+/* ===== ZDJĘCIA ===== */
+.memories{
+  text-align:center;
+  margin:120px 0;
+}
+
+.memories h2{
+  font-family:'Priestacy','Great Vibes',cursive;
+  font-size:45px;
+  margin-bottom:60px;
+  color:#ff4d6d;
+}
+
+.photos{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  gap:40px;
+  flex-wrap:wrap;
+}
+
+.photo{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(15px);
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  transition:.4s;
+  position:relative;
+  gap:20px;
+}
+
+.photo::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border-radius:20px;
+  background:linear-gradient(120deg,#ff4d6d55,transparent);
+  z-index:-1;
+}
+
+.photo img{
+  width:320px;
+  max-width:80vw;
+  height:auto;
+  object-fit:cover;
+}
+
+.photo:nth-child(6n+1){ transform:translateY(0px) rotate(-4deg); }
+.photo:nth-child(6n+2){ transform:translateY(80px) rotate(3deg); }
+.photo:nth-child(6n+3){ transform:translateY(160px) rotate(-2deg); }
+.photo:nth-child(6n+4){ transform:translateY(240px) rotate(4deg); }
+.photo:nth-child(6n+5){ transform:translateY(320px) rotate(-3deg); }
+.photo:nth-child(6n+6){ transform:translateY(400px) rotate(2deg); }
+
+.photo:hover{
+  transform:scale(1.05) rotate(0deg) translateY(0) !important;
+  z-index:2;
+}
+
+/* ===== GRA ===== */
+#game{
+  position:fixed;
+  inset:0;
+  background:#111;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:99999;
+}
+canvas{
+  background:#222;
+  border:2px solid #ff4d6d;
+}
+
+/* RESPONSYWNOŚĆ */
+@media(max-width:768px){
+  .card{ flex-direction:column; text-align:center; }
+  .card img{ width:100%; }
+  .photo{ transform:none !important; }
+}
+
+.voice{
+  margin-top:20px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  background:rgba(255,255,255,0.08);
+  padding:10px 15px;
+  border-radius:20px;
+  width:fit-content;
+}
+
+.voice button{
+  background:#ff4d6d;
+  border:none;
+  color:white;
+  border-radius:50%;
+  width:40px;
+  height:40px;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.wave{
+  display:flex;
+  gap:3px;
+}
+
+.wave div{
+  width:4px;
+  height:10px;
+  background:#ff4d6d;
+  animation:wave 1s infinite ease-in-out;
+}
+
+.wave div:nth-child(2){animation-delay:.2s;}
+.wave div:nth-child(3){animation-delay:.4s;}
+.wave div:nth-child(4){animation-delay:.6s;}
+.wave div:nth-child(5){animation-delay:.8s;}
+
+@keyframes wave{
+  0%,100%{height:10px;}
+  50%{height:20px;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="loader">loading love…❤️‍🔥❤️‍🔥❤️‍🔥</div>
+
+<audio id="music" src="muzyka.mp3" loop></audio>
+
+<section class="hero">
+  <div class="title" id="title">Kocham Cię</div>
+
+  <div class="hearts" id="hearts"></div>
+  <div class="scroll">↓</div>
+</section>
+
+<section class="card">
+  <img src="zdjecie_main.jpg" alt="Zdjęcie">
+
+  <p>
+    <strong>Kochanie,</strong><br><br>
+
+    Ciężko jest opisać to, co do Ciebie czuję, ale spróbuję ubrać to w jak najlepsze słowa.<br>
+    Odkąd Cię poznałem, wszystko nabrało więcej radości, szczęścia i sensu. Nawet najprostsze chwile są zupełnie inne, gdy jesteś obok.<br><br>
+
+    Najbardziej lubię te momenty, kiedy jesteś blisko – spokojna, szczęśliwa albo nawet zdenerwowana, bo mimo wszystko uwielbiam na Ciebie patrzeć.<br>
+    Właśnie wtedy czuję, jak bardzo mi na Tobie zależy. Sprawiasz, że chcę więcej, robić więcej, osiągać więcej – żeby dawać Ci jak najwięcej powodów do uśmiechu i żebyś zawsze czuła się tą najważniejszą.<br><br>
+
+    Gdy tylko zaczęliśmy rozmawiać, od pierwszych chwil miałem wrażenie, jakbym znalazł swoją bratnią duszę – te same głowy, tylko inne ciała.<br>
+    Nasze pierwsze spotkanie było dla mnie niesamowicie emocjonujące. Chciałem, żeby wszystko wyszło jak najlepiej, bo kiedy zobaczyłem, jaka dama idzie w moją stronę, aż mnie zatkało ze stresu. Ten kwiatek prawie mi wypadł z ręki – do dziś pamiętam, jak powiedziałaś, jaki ze mnie dżentelmen.<br><br>
+
+    Do teraz sprawiasz, że w każdej sytuacji chcę wypaść jak najlepiej. Od samego początku chciałem Ci pokazać, że bliskość nie musi opierać się tylko na fizyczności, ale przede wszystkim na emocjach i odpowiedzialności… choć przy Tobie czasem naprawdę trudno się opanować.<br><br>
+
+    Jesteś i będziesz dla mnie kimś naprawdę najważniejszym.<br>
+    Chcę, żebyś zawsze o tym pamiętała.<br><br>
+
+    Kocham Cię…<br><br>
+
+    <span class="word trigger" style="cursor:pointer;">miau</span> ❤️
+  </p>
+</section>
+
+<div class="photos">
+  <div class="photo"><img src="zdjecie1.jpg"></div>
+  <div class="photo"><img src="zdjecie2.jpg"></div>
+  <div class="photo"><img src="zdjecie3.jpg"></div>
+
+  <div class="photo"><img src="zdjecie4.jpeg"></div>
+  <div class="photo"><img src="zdjecie5.jpeg"></div>
+  <div class="photo"><img src="zdjecie6.jpeg"></div>
+  <div class="photo"><img src="zdjecie7.jpeg"></div>
+  <div class="photo"><img src="zdjecie8.jpeg"></div>
+  <div class="photo"><img src="zdjecie9.jpeg"></div>
+  <div class="photo"><img src="zdjecie10.jpeg"></div>
+  <div class="photo"><img src="zdjecie11.jpeg"></div>
+</div>
+
+<div id="game">
+  <canvas id="canvas" width="700" height="250"></canvas>
+  <p>Spacja lub klik = skok</p>
+</div>
+
+<script>
+// ===== SERCA =====
+const heartsContainer = document.getElementById("hearts");
+for(let i=0;i<30;i++){
+  const h = document.createElement("div");
+  h.classList.add("heart");
+  h.innerHTML = "🤍";
+  h.style.left = Math.random()*100 + "%";
+  h.style.animationDuration = (Math.random()*3+3) + "s";
+  h.style.fontSize = (Math.random()*20+10) + "px";
+  heartsContainer.appendChild(h);
+}
+
+// ===== MUZYKA =====
+const music = document.getElementById("music");
+function startMusic(){
+  music.volume = 0;
+  music.play().catch(()=>{});
+  let vol = 0;
+  const fade = setInterval(()=>{
+    if(vol < 0.8){
+      vol += 0.02;
+      music.volume = vol;
+    } else clearInterval(fade);
+  }, 200);
+}
+
+window.addEventListener("load", () => {
+  startMusic();
+  setTimeout(()=>{
+    document.getElementById("title").classList.add("animate");
+  },2600);
+});
+
+document.body.addEventListener("click", startMusic, { once:true });
+
+// ===== START GRY =====
+document.querySelectorAll(".word").forEach(word=>{
+  word.addEventListener("click", startGame);
+});
+
+// ===== GRA =====
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const ground = 180;
+
+const catImg = new Image();
+catImg.src = "cat.png";
+
+const obstacleImg = new Image();
+obstacleImg.src = "obstacle.png";
+
+let cat = { x:80, y:ground, w:60, h:60, vy:0, jumping:false };
+let obstacles = [];
+let gravity = 0.5;
+let jumpPower = -12;
+let speed = 4;
+let running = false;
+let score = 0;
+
+let spawnTimer = 0;
+let spawnDelay = 120;
+
+const gameDiv = document.getElementById("game");
+
+const scoreText = document.createElement("div");
+scoreText.style.marginTop = "10px";
+scoreText.style.fontSize = "20px";
+
+const restartBtn = document.createElement("button");
+restartBtn.innerText = "Zagraj jeszcze raz ❤️";
+restartBtn.style.marginTop = "10px";
+restartBtn.style.padding = "10px 20px";
+restartBtn.style.cursor = "pointer";
+restartBtn.style.display = "none";
+
+gameDiv.appendChild(scoreText);
+gameDiv.appendChild(restartBtn);
+
+function startGame(){
+  gameDiv.style.display="flex";
+
+  obstacles = [];
+  cat.y = ground;
+  cat.vy = 0;
+  cat.jumping = false;
+
+  score = 0;
+  speed = 4;
+  spawnTimer = 0;
+  spawnDelay = 120;
+
+  scoreText.innerText = "Wynik: 0";
+  restartBtn.style.display = "none";
+
+  running = true;
+  loop();
+}
+
+restartBtn.onclick = startGame;
+
+// ===== SKOK =====
+function jump(){
+  if(running && !cat.jumping){
+    cat.vy = jumpPower;
+    cat.jumping = true;
+  }
+}
+
+document.addEventListener("keydown",(e)=>{
+  if(e.code==="Space") jump();
+});
+
+// klik / tap
+gameDiv.addEventListener("click", jump);
+gameDiv.addEventListener("touchstart", jump, { passive:true });
+
+function loop(){
+  if(!running) return;
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.strokeStyle="#555";
+  ctx.beginPath();
+  ctx.moveTo(0,ground+60);
+  ctx.lineTo(canvas.width,ground+60);
+  ctx.stroke();
+
+  cat.vy += gravity;
+  cat.y += cat.vy;
+
+  if(cat.y >= ground){
+    cat.y = ground;
+    cat.vy = 0;
+    cat.jumping = false;
+  }
+
+  ctx.drawImage(catImg,cat.x,cat.y,cat.w,cat.h);
+
+  spawnTimer++;
+  if(spawnTimer > spawnDelay){
+    obstacles.push({
+      x:canvas.width,
+      y:ground+20,
+      w:40,
+      h:40
+    });
+
+    spawnTimer = 0;
+    spawnDelay = 100 + Math.random()*80;
+  }
+
+  obstacles.forEach(o=>{
+    o.x -= speed;
+
+    ctx.drawImage(obstacleImg,o.x,o.y,o.w,o.h);
+
+    if(
+      cat.x < o.x + o.w &&
+      cat.x + cat.w > o.x &&
+      cat.y + cat.h > o.y
+    ){
+      gameOver();
+    }
+  });
+
+  score++;
+  scoreText.innerText = "Wynik: " + score;
+
+  if(score % 300 === 0){
+    speed += 0.5;
+  }
+
+  requestAnimationFrame(loop);
+}
+
+function gameOver(){
+  running = false;
+  scoreText.innerText = "Koniec 💔 Wynik: " + score;
+  restartBtn.style.display = "block";
+}
+
+const voice = document.getElementById("voiceAudio");
+const btn = document.getElementById("playVoice");
+const time = document.getElementById("time");
+
+btn.onclick = () => {
+  if(voice.paused){
+    voice.play();
+    btn.innerText = "⏸";
+  } else {
+    voice.pause();
+    btn.innerText = "▶";
+  }
+};
+
+voice.ontimeupdate = () => {
+  const m = Math.floor(voice.currentTime / 60);
+  const s = Math.floor(voice.currentTime % 60).toString().padStart(2,"0");
+  time.innerText = `${m}:${s}`;
+};
+</script>
+
+</body>
+</html>
