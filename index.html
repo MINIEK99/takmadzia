@@ -328,7 +328,7 @@ canvas{
 </div>
 
 <div id="game">
-  <canvas id="canvas" width="700" height="250"></canvas>
+  <canvas id="canvas"></canvas>
   <p>Spacja lub klik = skok</p>
 </div>
 
@@ -376,6 +376,14 @@ document.querySelectorAll(".word").forEach(word=>{
 // ===== GRA =====
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+function resizeCanvas(){
+  canvas.width = window.innerWidth - 20;
+  canvas.height = 220;
+}
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
 const ground = window.innerWidth < 600 ? 160 : 180;
 
