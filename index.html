@@ -239,6 +239,19 @@ canvas{
   background:#ff4d6d;
   animation:wave 1s infinite ease-in-out;
 }
+.mute-btn{
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:9999;
+  background:#ff4d6d;
+  border:none;
+  color:white;
+  font-size:20px;
+  padding:10px 14px;
+  border-radius:50%;
+  cursor:pointer;
+}
 
 .wave div:nth-child(2){animation-delay:.2s;}
 .wave div:nth-child(3){animation-delay:.4s;}
@@ -253,6 +266,7 @@ canvas{
 </head>
 
 <body>
+  <button id="muteBtn" class="mute-btn">🔊</button>
 
 <div id="loader">loading love…❤️‍🔥❤️‍🔥❤️‍🔥</div>
 
@@ -286,9 +300,16 @@ canvas{
     Chcę, żebyś zawsze o tym pamiętała.<br><br>
 
     Kocham Cię…<br><br>
+      
 
-    <span class="word trigger" style="cursor:pointer;">miau</span> ❤️
+    <span class="word trigger" style="cursor:pointer;">miau</span> ❤️<br><br>
+
+<audio id="voiceNote" controls>
+  <source src="glosowka.mp3" type="audio/mpeg">
+</audio>
   </p>
+
+
 </section>
 
 <div class="photos">
@@ -356,7 +377,7 @@ document.querySelectorAll(".word").forEach(word=>{
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const ground = 180;
+const ground = window.innerWidth < 600 ? 160 : 180;
 
 const catImg = new Image();
 catImg.src = "cat.png";
@@ -364,7 +385,16 @@ catImg.src = "cat.png";
 const obstacleImg = new Image();
 obstacleImg.src = "obstacle.png";
 
-let cat = { x:80, y:ground, w:60, h:60, vy:0, jumping:false };
+let scale = window.innerWidth < 600 ? 1.8 : 1;
+
+let cat = {
+  x:80,
+  y:ground,
+  w:60 * scale,
+  h:60 * scale,
+  vy:0,
+  jumping:false
+};
 let obstacles = [];
 let gravity = 0.5;
 let jumpPower = -12;
@@ -456,8 +486,8 @@ function loop(){
     obstacles.push({
       x:canvas.width,
       y:ground+20,
-      w:40,
-      h:40
+      w:40 * scale,
+      h:40 * scale
     });
 
     spawnTimer = 0;
@@ -494,25 +524,37 @@ function gameOver(){
   restartBtn.style.display = "block";
 }
 
-const voice = document.getElementById("voiceAudio");
-const btn = document.getElementById("playVoice");
-const time = document.getElementById("time");
 
-btn.onclick = () => {
-  if(voice.paused){
-    voice.play();
-    btn.innerText = "⏸";
+
+const muteBtn = document.getElementById("muteBtn");
+
+
+let isMuted = false;
+
+muteBtn.addEventListener("click", () => {
+  isMuted = !isMuted;
+
+  if(isMuted){
+    music.volume = 0;
+    muteBtn.innerText = "🔇";
   } else {
-    voice.pause();
-    btn.innerText = "▶";
+    music.volume = 0.8;
+    muteBtn.innerText = "🔊";
   }
-};
+});
 
-voice.ontimeupdate = () => {
-  const m = Math.floor(voice.currentTime / 60);
-  const s = Math.floor(voice.currentTime % 60).toString().padStart(2,"0");
-  time.innerText = `${m}:${s}`;
-};
+
+const voiceNote = document.getElementById("voiceNote");
+
+voiceNote.addEventListener("play", () => {
+  music.volume = 0.1;
+});
+
+voiceNote.addEventListener("pause", () => {
+  if(!isMuted) music.volume = 0.8;
+});
+
+
 </script>
 
 </body>
